@@ -1,9 +1,9 @@
 ## MMusic
 
-MMusic.4
+MMusic1.4
 
 ### Thanks to the open source project
-* [anko](https://github.com/Kotlin/anko)
+* [AndroidUtilCode](https://github.com/Blankj/AndroidUtilCode)
 * [Fragmentation](https://github.com/YoKeyword/Fragmentation)
 * [RxJava](https://github.com/ReactiveX/RxJava)
 * [RxAndroid](https://github.com/ReactiveX/RxAndroid)
@@ -14,7 +14,7 @@ MMusic.4
 * [rclayout](https://github.com/GcsSloop/rclayout)
 
 ### About me
-* B站 [嘘嘘梓](https://space.bilibili.com/6789810/)
+* B站 [嘘嘘梓](https://space.bilibili.com/134566397/#/)
 
 ### License
  Copyright 2018 zm
