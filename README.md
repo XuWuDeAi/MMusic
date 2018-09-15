@@ -6,7 +6,6 @@ MMusic1.4
 * [AndroidUtilCode](https://github.com/Blankj/AndroidUtilCode)
 * [glide](https://github.com/bumptech/glide)
 * [okhttputils](https://github.com/hongyangAndroid/okhttputils)
-* [glide](https://github.com/bumptech/glide)
 * [Highlight](https://github.com/hongyangAndroid/Highlight)
 
 ### About me
