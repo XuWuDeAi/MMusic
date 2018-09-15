@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/LL_activity_main"
+    android:background="@color/black_alpha_30"
+    tools:context="main.zm.mmusic.MainActivity">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center"
+        >
+        <ImageButton
+            android:id="@+id/ib_top1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="miaomiao"
+            android:src="@drawable/ic_paiming"
+            android:theme="@style/RippleWhite" />
+        <ImageButton
+            android:id="@+id/ib_top2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="miaomiao"
+            android:src="@drawable/ic_home_activity"
+            android:theme="@style/RippleWhite" />
+        <ImageButton
+            android:id="@+id/ib_top3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="miaomiao"
+            android:src="@drawable/ic_download_activity"
+            android:theme="@style/RippleWhite" />
+
+
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <!--<include layout="@layout/activity_down_item"/>-->
+    <com.hrb.library.MiniMusicView
+        android:id="@+id/mmv_music"
+        app:isLoadLayout="true"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"/>
+</LinearLayout>

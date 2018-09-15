@@ -1,0 +1,72 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="tyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tyColor</item>
+        <item name="colorPrimaryDark">@color/tyColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <style name="alTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/alColor</item>
+        <item name="colorPrimaryDark">@color/alColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="yhTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/yhColor</item>
+        <item name="colorPrimaryDark">@color/yhColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="xcTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/xcColor</item>
+        <item name="colorPrimaryDark">@color/xcColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="xhTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/xhColor</item>
+        <item name="colorPrimaryDark">@color/xhColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="lmTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/lmColor</item>
+        <item name="colorPrimaryDark">@color/lmColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="titleTextColor">#ffffff</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="RippleWhite">
+        <item name="android:colorControlHighlight">#555555</item>
+        <item name="android:radius">25dp</item>
+    </style>
+
+</resources>
