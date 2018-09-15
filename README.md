@@ -4,14 +4,10 @@ MMusic1.4
 
 ### Thanks to the open source project
 * [AndroidUtilCode](https://github.com/Blankj/AndroidUtilCode)
-* [Fragmentation](https://github.com/YoKeyword/Fragmentation)
-* [RxJava](https://github.com/ReactiveX/RxJava)
-* [RxAndroid](https://github.com/ReactiveX/RxAndroid)
-* [okhttp](https://github.com/square/okhttp)
 * [glide](https://github.com/bumptech/glide)
-* [bilibili-sdk-go](https://github.com/WhiteBlue/bilibili-sdk-go)
-* [NumberPickerView](https://github.com/Carbs0126/NumberPickerView)
-* [rclayout](https://github.com/GcsSloop/rclayout)
+* [okhttputils](https://github.com/hongyangAndroid/okhttputils)
+* [glide](https://github.com/bumptech/glide)
+* [Highlight](https://github.com/hongyangAndroid/Highlight)
 
 ### About me
 * B站 [嘘嘘梓](https://space.bilibili.com/134566397/#/)
