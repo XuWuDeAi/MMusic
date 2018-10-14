@@ -2,87 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/LL_activity_main"
-    android:background="@color/black_alpha_30"
-    tools:context="main.zm.mmusic.MainActivity">
+    tools:context="zm.mmstudy.MainActivity">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:gravity="center"
-            >
-            <ImageButton
-                android:id="@+id/ib_top1"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="miaomiao"
-                android:src="@drawable/ic_paiming"
-                android:theme="@style/RippleWhite" />
-            <ImageButton
-                android:id="@+id/ib_top2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="miaomiao"
-                android:src="@drawable/ic_home_activity"
-                android:theme="@style/RippleWhite" />
-            <ImageButton
-                android:id="@+id/ib_top3"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
-
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="miaomiao"
-                android:src="@drawable/ic_download_activity"
-                android:theme="@style/RippleWhite" />
-
-            <ImageView
-                android:id="@+id/iv_search"
-                android:layout_width="@dimen/music_layout_next_btn_width"
-                android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:scaleType="center"
-                android:layout_marginLeft="20dp"
-                android:rotation="90"
-                android:clickable="true"
-                android:src="@drawable/ic_search" />
-        </LinearLayout>
-
-
-
-    </LinearLayout>
-
+    <!--<com.flyco.tablayout.SlidingTabLayout-->
+        <!--android:id="@+id/tabLayout_1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:background="#009ACD"-->
+        <!--app:tl_indicator_style="BLOCK"-->
+        <!--app:tl_tab_space_equal="true"-->
+        <!--/>-->
+    <!--<zm.mmstudy.view.NoScrollViewPager-->
+        <!--android:id="@+id/id_viewpager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"  />-->
 
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/vp_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 
-    <!--<include layout="@layout/activity_down_item"/>-->
-    <com.hrb.library.MiniMusicView
-        android:id="@+id/mmv_music"
-        app:isLoadLayout="true"
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
         android:layout_width="match_parent"
-        android:layout_height="52dp"/>
+        android:layout_height="45dp"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation" />
+
 </LinearLayout>

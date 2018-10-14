@@ -1,20 +1,9 @@
 <resources>
-    <string name="app_name">biliMusic</string>
+    <string name="app_name">MMStudy</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">最新</string>
+    <string name="title_notifications">我的</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="ServiceReceiver.last">com.example.notification.ServiceReceiver.last</string>
-    //----通知栏上一首按钮
-    <string name="ServiceReceiver.play">com.example.notification.ServiceReceiver.play</string>
-    //----通知栏播放按钮
-    <string name="ServiceReceiver.next">om.example.notification.ServiceReceiver.next</string>
-    //----通知栏下一首按钮
-
-    <array name="bootstrap_dropdown_example_data">
-        <item>全部</item>
-        <item>图片</item>
-        <item>影视</item>
-        <item>其他</item>
-    </array>
 </resources>

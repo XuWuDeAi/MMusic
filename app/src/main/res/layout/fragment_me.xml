@@ -1,0 +1,135 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/gray_10"
+  >
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/white"
+        app:srcCompat="@drawable/im_drawer_top" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_cheekversion"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/tv_selected_bg"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_update" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="#000"
+            android:textSize="9pt"
+            android:text="检查更新" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_chooselaopo"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/tv_selected_bg"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_tool" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="#000"
+            android:textSize="9pt"
+            android:text="更换皮肤" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_sbsay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/tv_selected_bg"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_message" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="#000"
+            android:textSize="9pt"
+            android:text="用户反馈" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_aboutme"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/tv_selected_bg"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_tome" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="#000"
+            android:textSize="9pt"
+            android:text="关于我" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
