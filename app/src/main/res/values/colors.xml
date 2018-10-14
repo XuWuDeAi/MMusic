@@ -3,6 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="text_color">#FF000000</color>
+    <color name="test_color">#696969</color>
+
+
+    <!--自定义-->
+    <color name="music_item">#220099cc</color>
+    <color name="music_item_activity">#B0E0E6</color>
+
+
 
     <color name="tyColor">#66ccff</color><!--天依-->
     <color name="alColor">#ee0000</color><!--阿绫-->
@@ -10,6 +19,8 @@
     <color name="xcColor">#9999ff</color><!--星尘-->
     <color name="xhColor">#ee82ee</color><!--心华-->
     <color name="lmColor">#00a0ea</color><!--雷姆-->
+
+
 
     <color name="yellow_50">#FFD11B</color>
     <color name="yellow_30">#FEA501</color>

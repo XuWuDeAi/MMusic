@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_gray"
+    android:orientation="vertical"
+    android:id="@+id/ll_fragleader"
+    tools:context=".fragment.LeaderboardFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textColor="@color/yhColor"
+        android:layout_marginTop="1dp"
+        android:gravity="center"
+        android:background="@color/navigation_subtitle_secondary_text"
+        android:textSize="17dp"
+        android:text="排行榜" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_leaderboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

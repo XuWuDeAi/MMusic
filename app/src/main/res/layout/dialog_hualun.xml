@@ -8,29 +8,15 @@
     android:orientation="vertical">
 
 
-    <cn.carbswang.android.numberpickerview.library.NumberPickerView
-        android:id="@+id/picker"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="#11333333"
-        android:contentDescription="test_number_picker_view"
-        android:layout_marginBottom="10dp"
-        app:npv_ItemPaddingHorizontal="5dp"
-        app:npv_ItemPaddingVertical="5dp"
-        app:npv_RespondChangeOnDetached="false"
-        app:npv_ShowCount="5"
-        app:npv_TextSizeNormal="16sp"
-        app:npv_TextSizeSelected="20sp"
-        app:npv_WrapSelectorWheel="true" />
-
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/id_ok"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FE2D4A"
-        android:text="确认"
-        android:textColor="#FFF"
-        android:textSize="24sp"/>
+        android:text="删除"
+        app:bootstrapBrand="danger"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:showOutline="false"
+        app:roundedCorners="true"
+        />
 </LinearLayout>

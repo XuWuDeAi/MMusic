@@ -8,8 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-
     <style name="tyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/tyColor</item>
         <item name="colorPrimaryDark">@color/tyColor</item>
@@ -65,4 +63,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="RippleWhite">
+        <item name="android:colorControlHighlight">#555555</item>
+        <item name="android:radius">25dp</item>
+    </style>
+
 </resources>

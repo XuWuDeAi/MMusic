@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "zm.mmstudy"
+        applicationId "main.zm.mmusic"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "1.5"
+        versionName "2.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -21,34 +22,30 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.android.support:support-vector-drawable:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-v4:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    compile 'cn.carbswang.android:NumberPickerView:1.1.1'
+    //第三方
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.zhy:okhttputils:2.6.2'
-    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.beardedhen:androidbootstrap:2.3.2'
-    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
-    compile 'cn.carbs.android:MDDialog:1.0.0'
+    compile 'com.venmo.view.tooltip:tooltip:0.1.2@aar'
     implementation 'com.android.support:cardview-v7:26.1.0'
-    implementation "com.blankj:rxbus:1.2"
+    implementation 'com.blankj:utilcode:1.20.1'
+    compile 'com.henryblue.minimusicview:library:1.0.1'
+    compile 'com.isanwenyu.highlight:highlight:1.8.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.wnafee:vector-compat:1.0.5'
 
-    // 其他依赖
-    compile 'com.facebook.fresco:fresco:0.12.0'
-    // 支持 WebP （静态图+动图），需要添加
-    compile 'com.facebook.fresco:animated-webp:0.12.0'
-    compile 'com.facebook.fresco:webpsupport:0.12.0'
+    compile 'com.github.jd-alexander:LikeButton:0.2.3'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.1'
 
 
-
-//1.1.0 API改动过大，老用户升级需谨慎
-    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
-    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'//没有使用特殊Header，可以不加这行
-    compile 'com.android.support:appcompat-v7:25.3.1'//版本 23以上（必须）
 }
