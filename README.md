@@ -1,6 +1,6 @@
 ## MMusic
 
-MMusic1.4
+MMusic2.6
 
 ### Thanks to the open source project
 * [AndroidUtilCode](https://github.com/Blankj/AndroidUtilCode)
