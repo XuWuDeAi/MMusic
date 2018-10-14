@@ -7,3 +7,4 @@
     <!--默认颜色-->
     <item android:drawable="@color/music_item" />
 </selector>
+

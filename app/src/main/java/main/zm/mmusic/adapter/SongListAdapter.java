@@ -106,7 +106,9 @@ public class SongListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
             try {
-                tv_popularity.setText(listdate.getJSONObject(position).getJSONObject("statistic").getInt("play")+"");
+
+                Double count = listdate.getJSONObject(position).getJSONObject("statistic").getInt("play") / 10000.0;
+                tv_popularity.setText(String.format("%.1f", count) + "万");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

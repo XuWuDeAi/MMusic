@@ -68,8 +68,9 @@
                 android:layout_height="match_parent"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerCrop"
+                android:clickable="true"
                 android:src="@drawable/mini_btn_pause"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ProgressBar
                 android:id="@+id/pb_loading"

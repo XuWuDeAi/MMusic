@@ -2,6 +2,8 @@ package main.zm.mmusic
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.graphics.*
 import android.support.v7.app.AppCompatActivity
@@ -30,22 +32,13 @@ import com.blankj.utilcode.util.PathUtils
 import kotlinx.android.synthetic.main.activity_down_item.*
 import com.hrb.library.MiniMusicView
 import com.hrb.library.R.id.iv_next_btn
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
+
 import kotlinx.android.synthetic.main.layout_mini_music.*
 import main.zm.mmusic.entity.MediaEntity
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-import zlc.season.rxdownload3.RxDownload
-import zlc.season.rxdownload3.core.DownloadConfig
 
-import zlc.season.rxdownload3.core.Status
-import zlc.season.rxdownload3.extension.ApkInstallExtension
-import zlc.season.rxdownload3.http.OkHttpClientFactoryImpl
-import zlc.season.rxdownload3.notification.NotificationFactoryImpl
 import java.net.URL
 import android.os.Environment.getExternalStorageDirectory
+import android.support.v4.app.FragmentActivity
 import android.system.Os.remove
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -56,7 +49,12 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.FileUtils
 import com.zhy.http.okhttp.callback.FileCallBack
 import com.zhy.http.okhttp.OkHttpUtils
+import kotlinx.android.synthetic.main.dialog_searchlist.*
 import kotlinx.android.synthetic.main.layout_mini_music.view.*
+import main.zm.mmusic.activity.MusicActivity
+import main.zm.mmusic.broadcast.ServiceReceiver
+import main.zm.mmusic.dialog.MusicPicDialog
+import main.zm.mmusic.dialog.SearchMusicDialog
 import main.zm.mmusic.service.FileDataManage
 import okhttp3.Call
 import org.json.JSONObject
@@ -87,8 +85,14 @@ class MainActivity : BaseActivity() {
     lateinit var manager: NotificationManager
     var isOpenApp = false//是已经启动app
 
+
+    //0单曲循环 1循环播放 2随机播放
+    var musicType = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
+//        //fresco初始化
+//        Fresco.initialize(this);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -98,8 +102,8 @@ class MainActivity : BaseActivity() {
         pages[0] = LeaderboardFragment()
         pages[1] = HomeFragment()
         pages[2] = OtherFragment()
-//        mediaPlayer = MediaPlayer()
         viewpager.offscreenPageLimit = 3
+//        mediaPlayer = MediaPlayer()
         initView()
 
 
@@ -117,11 +121,24 @@ class MainActivity : BaseActivity() {
 //        }
 //        updateThread.run()
 
+
+        var receiver = ServiceReceiver()//----注册广播
+        var intentFilter = IntentFilter()
+        intentFilter.addAction(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST)
+        intentFilter.addAction(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_PLAY)
+        intentFilter.addAction(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_NEXT)
+        intentFilter.addAction(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_MUSICTYPE)
+
+        registerReceiver(receiver, intentFilter);
+
 //新手引导
         firstRun()
         manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        NetService.Netmainactivity = this
         NetService.openNoti(this)
         isOpenApp = true
+
+
     }
 
 
@@ -180,7 +197,13 @@ class MainActivity : BaseActivity() {
                         b = e.x
                         //a<b证明右滑，否则左滑
                         if (a < b) {
-                            if ((b - a) < 20) return true
+                            if ((b - a) < 20) {
+//                                val intent = Intent(this@MainActivity, MusicActivity::class.java)
+//                                startActivity(intent)
+                                var dil = MusicPicDialog()
+                                dil.show(this@MainActivity.supportFragmentManager,"")
+                                return true
+                            }
                             val ss = when (b - a) {
                                 in 20..99 -> 10000
                                 in 100..200 -> 20000
@@ -192,7 +215,13 @@ class MainActivity : BaseActivity() {
                         } else {
 
 
-                            if ((a - b) < 20) return true
+                            if ((a - b) < 20) {
+//                                val intent = Intent(this@MainActivity, MusicActivity::class.java)
+//                                startActivity(intent)
+                                var dil = MusicPicDialog()
+                                dil.show(this@MainActivity.supportFragmentManager,"")
+                                return true
+                            }
                             val ss = when (a - b) {
                                 in 20..99 -> 10000
                                 in 100..200 -> 20000
@@ -204,30 +233,69 @@ class MainActivity : BaseActivity() {
 //                            toast(this@MainActivity.mmv_music.musicDuration.toString())
                         }
                     }
-                    MotionEvent.ACTION_CANCEL -> {
-                        Log.i("OnTouch", "ACTION_CANCEL手势取消")
-                        Log.i("OnTouch", e.x.toString() + "")
-                        Log.i("OnTouch", e.y.toString() + "")
-                        //获得抬起手指时的X值
-                        b = e.x
-                        //a<b证明右滑，否则左滑
-                        if (a < b) {
-                            //TODO 这里执行右滑事件
-                            Log.i("OnTouch", "右滑")
-                        } else {
-                            //TODO 这里执行左滑事件
-                            Log.i("OnTouch", "左滑")
-                        }
-                    }
-                    MotionEvent.ACTION_OUTSIDE -> {
-                        Log.i("OnTouch", "ACTION_OUTSIDE超出UI范围")
-                        Log.i("OnTouch", e.x.toString() + "")
-                        Log.i("OnTouch", e.y.toString() + "")
-                    }
-                    else -> {
-                    }
+
                 }
                 return true
+            }
+        })
+        mmv_music.setOnMusicStateListener(object : MiniMusicView.OnMusicStateListener {
+            override fun onError(what: Int, extra: Int) {
+
+            }
+
+            override fun onPrepared(duration: Int) {
+                Log.i("-------", "start prepare play music")
+            }
+
+            fun onError() {
+                Log.i("-------", "start play music error")
+            }
+
+            override fun onInfo(what: Int, extra: Int) {
+                Log.i("-------", "start play_mini_music music info")
+            }
+
+            override fun onMusicPlayComplete() {
+
+                if (musicType == 0) {
+                    mmv_music.iv_control_btn.performClick()
+                } else if (musicType == 1) {
+                    this@MainActivity.mediaEntity.lisdate?.let {
+
+                        var pos = this@MainActivity.mediaEntity.postion
+                        if ((pos + 1) == it.length()) {
+                            this@MainActivity.mediaEntity.postion = 0
+                            NetService.getNetMusic(this@MainActivity.mediaEntity.lisdate!!.getJSONObject(0).getInt("id"), this@MainActivity, this@MainActivity.mediaEntity.lisdate!!.getJSONObject(0), 0, this@MainActivity.mediaEntity.lisdate!!)
+                        } else {
+                            this@MainActivity.mediaEntity.postion++
+                            NetService.getNetMusic(this@MainActivity.mediaEntity.lisdate!!.getJSONObject(this@MainActivity.mediaEntity.postion).getInt("id"), this@MainActivity, this@MainActivity.mediaEntity.lisdate!!.getJSONObject(this@MainActivity.mediaEntity.postion), this@MainActivity.mediaEntity.postion, this@MainActivity.mediaEntity.lisdate!!)
+                        }
+                    }
+                } else {
+                    this@MainActivity.mediaEntity.lisdate?.let {
+
+                        var value = (0 + Math.random() * (it.length() - 0 + 1)).toInt()//(数据类型)(最小值+Math.random()*(最大值-最小值+1))从1到10的int型随数
+                        this@MainActivity.mediaEntity.postion = value
+                        NetService.getNetMusic(this@MainActivity.mediaEntity.lisdate!!.getJSONObject(this@MainActivity.mediaEntity.postion).getInt("id"), this@MainActivity, this@MainActivity.mediaEntity.lisdate!!.getJSONObject(this@MainActivity.mediaEntity.postion), this@MainActivity.mediaEntity.postion, this@MainActivity.mediaEntity.lisdate!!)
+                    }
+
+
+                }
+
+
+            }
+
+            override fun onSeekComplete() {
+                Log.i("-------", "seek play music completed")
+            }
+
+            override fun onProgressUpdate(duration: Int, currentPos: Int) {
+
+
+            }
+
+            override fun onHeadsetPullOut() {
+                mmv_music.pausePlayMusic()
             }
         })
 
@@ -288,32 +356,30 @@ class MainActivity : BaseActivity() {
 
     fun initTopButton() {
 
-        ib_top1.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                ib_top1.setImageResource(R.drawable.ic_paiming)
-                ib_top2.setImageResource(R.drawable.ic_home_activity)
-                ib_top3.setImageResource(R.drawable.ic_download_activity)
-                viewpager.currentItem = 0
-            }
-        })
+        ib_top1.setOnClickListener {
+            ib_top1.setImageResource(R.drawable.ic_paiming)
+            ib_top2.setImageResource(R.drawable.ic_home_activity)
+            ib_top3.setImageResource(R.drawable.ic_download_activity)
+            viewpager.currentItem = 0
+        }
 
-        ib_top2.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                ib_top1.setImageResource(R.drawable.ic_paiming_activity)
-                ib_top2.setImageResource(R.drawable.ic_home)
-                ib_top3.setImageResource(R.drawable.ic_download_activity)
-                viewpager.currentItem = 1
-            }
-        })
-        ib_top3.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                ib_top3.setImageResource(R.drawable.ic_download)
-                ib_top1.setImageResource(R.drawable.ic_paiming_activity)
-                ib_top2.setImageResource(R.drawable.ic_home_activity)
-                viewpager.currentItem = 2
+        ib_top2.setOnClickListener {
+            ib_top1.setImageResource(R.drawable.ic_paiming_activity)
+            ib_top2.setImageResource(R.drawable.ic_home)
+            ib_top3.setImageResource(R.drawable.ic_download_activity)
+            viewpager.currentItem = 1
+        }
+        ib_top3.setOnClickListener {
+            ib_top3.setImageResource(R.drawable.ic_download)
+            ib_top1.setImageResource(R.drawable.ic_paiming_activity)
+            ib_top2.setImageResource(R.drawable.ic_home_activity)
+            viewpager.currentItem = 2
+        }
+        iv_search.setOnClickListener {
+            var context = SearchMusicDialog()
+            context.show(supportFragmentManager, "")
+        }
 
-            }
-        })
 
     }
 
@@ -363,6 +429,12 @@ class MainActivity : BaseActivity() {
 
     }
 
+    override fun onBackPressed() {
+        var intent = Intent()
+        intent.setAction("android.intent.action.MAIN");
+        intent.addCategory("android.intent.category.HOME");
+        startActivity(intent)
+    }
 }
 
 

@@ -44,7 +44,7 @@ class DeleFileDialog : DialogFragment() {
         mainActivity = activity as MainActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 创建View, 指定布局XML
         val view = inflater!!.inflate(R.layout.dialog_hualun, container)
 

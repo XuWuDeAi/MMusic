@@ -13,8 +13,6 @@ class MessageActivity : AppCompatActivity() {
         if (!ActivityUtils.isActivityExistsInStack(MainActivity::class.java)) {
             AppUtils.launchApp(packageName)
         }
-
         finish()
-
     }
 }

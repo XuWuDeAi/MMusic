@@ -3,20 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="67dp"
-    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="100dp"
+    android:background="@color/background_gray"
     tools:targetApi="lollipop">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="67dp"
+        android:layout_height="100dp"
         android:layout_centerVertical="true"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_noti_music_icon"
-            android:layout_width="67dp"
-            android:layout_height="67dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginLeft="@dimen/music_layout_icon_marginLeft"
             android:src="@drawable/miao"
             android:scaleType="centerCrop"/>
@@ -51,28 +52,61 @@
                 android:id="@+id/tv_music_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/music_layout_author_textSize" />
-        </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/music_layout_loading_width"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/iv_control_btn"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:scaleType="centerCrop"
-                android:src="@drawable/mini_btn_pause"
-                android:visibility="gone"/>
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageButton
+                    android:id="@+id/iv_notimusictype"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/tv_selected_notimusic"
+                    android:clickable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_onereturn"
+                    />
+
+                <ImageButton
+                    android:id="@+id/bt_notilast"
+                    android:layout_width="@dimen/music_layout_next_btn_width"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/tv_selected_notimusic"
+                    android:scaleType="centerCrop"
+                    android:rotation="180"
+                    android:clickable="true"
+                    android:src="@drawable/mini_btn_next" />
 
 
-        </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/bt_noticontrolmusic"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/tv_selected_notimusic"
+                    android:scaleType="centerCrop"
+                    android:clickable="true"
+                    android:src="@drawable/mini_btn_pause" />
+
+
+                <ImageButton
+                    android:id="@+id/bt_notinext"
+                    android:layout_width="@dimen/music_layout_next_btn_width"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/tv_selected_notimusic"
+                    android:scaleType="centerCrop"
+                    android:clickable="true"
+                    android:src="@drawable/mini_btn_next" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

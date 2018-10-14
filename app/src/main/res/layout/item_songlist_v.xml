@@ -48,15 +48,32 @@
                 android:gravity="center"
                 android:text="aaaaaaaaaaaaaaaaaaaaa" />
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:orientation="horizontal"
+                android:gravity="right"
+
+                >
+
                 <TextView
                     android:id="@+id/tv_popularity"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0.5dp"
                     android:layout_gravity="right"
-                    android:gravity="center"
+                    android:textColor="#888"
                     android:drawableLeft="@drawable/ic_erji"
-                    android:text="Right-aligned" />
+                    android:textSize="14dp"
+                    android:gravity="center"
+                    android:text="Right" />
+
+
+            </LinearLayout>
+
+
+
+
 
 
         </LinearLayout>

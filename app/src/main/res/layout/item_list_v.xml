@@ -29,11 +29,13 @@
 
         <TextView
             android:id="@+id/tv_musicname"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@drawable/tv_selected_music"
             android:gravity="center"
             android:text="Right-aligned" />
+
 
     </LinearLayout>
 

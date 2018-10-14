@@ -99,8 +99,9 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .load(uri)
                     .placeholder(R.mipmap.placeholder_disk_300)//图片加载出来前，显示的图片
                     .error(R.mipmap.placeholder_disk_300)//图片加载失败后，显示的图片
+                    .thumbnail( 0.1f )//略缩图只显示原图10%
                     .into(down_img);
-
+//            down_img.setImageURI(uri);
         }
     }
 

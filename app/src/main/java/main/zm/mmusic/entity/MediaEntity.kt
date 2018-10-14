@@ -10,4 +10,5 @@ class MediaEntity {
     var lisdate: JSONArray? = null
     var postion: Int = 0
     var fileURL: String? = null
+    var musicUrl: String? = null
 }

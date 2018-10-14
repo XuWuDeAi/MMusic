@@ -46,6 +46,7 @@ class LeaderboardFragment : Fragment() {
         NetService.getTopMusic(this)
 
 
+
     }
 
     private fun initListView() {

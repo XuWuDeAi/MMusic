@@ -1,5 +1,6 @@
 package main.zm.mmusic.service
 
+import android.app.*
 import android.net.Uri
 import com.bumptech.glide.Glide
 import org.json.JSONObject
@@ -17,28 +18,39 @@ import org.json.JSONArray
 import java.io.IOException
 import java.lang.Exception
 
-import android.app.PendingIntent
-import android.app.Activity
-import android.app.Notification
 import android.content.Intent
 import android.content.Context.NOTIFICATION_SERVICE
-import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.support.v7.app.NotificationCompat
 
 import android.widget.RemoteViews
 import kotlinx.android.synthetic.main.layout_mini_musictis.*
-import zlc.season.rxdownload3.helper.getPackageName
 import main.zm.mmusic.MainActivity
 import main.zm.mmusic.MessageActivity
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
+import com.zhy.http.okhttp.callback.BitmapCallback
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
+import main.zm.mmusic.broadcast.ServiceReceiver
+import main.zm.mmusic.dialog.SearchMusicDialog
+import okhttp3.Request
 
 
 /**
  * Created by zm on 2018/9/9.
  */
 object NetService {
+
+    lateinit var Netmainactivity: MainActivity
+
 
     fun getTopMusic(leaderboardFragment: LeaderboardFragment) {
         val url = "https://www.bilibili.com/audio/music-service-c/web/song/of-menu?sid=10627&pn=1&ps=100"
@@ -100,15 +112,63 @@ object NetService {
                 })
     }
 
-    fun getNetMusic(sid: Int, mainActivity: MainActivity, it: JSONObject, postion: Int, listDate: JSONArray) {
+    fun getNetMusic(sid: Int, mainActivity: MainActivity, itj: JSONObject, postion: Int, listDate: JSONArray) {
         //如果在播放中，立刻暂停。
         if (mainActivity.mmv_music.isPlaying()) {
             mainActivity.mmv_music.pausePlayMusic()
         }
         mainActivity.mmv_music.changeControlBtnState(true)
 
-        setBottomMedia(mainActivity, it.getString("cover"), it.getString("title"), it.getString("author"), postion, listDate)
-        setNoti(mainActivity,it.getString("title"),it.getString("author"),it.getString("cover"))
+        setBottomMedia(mainActivity, itj.getString("cover"), itj.getString("title"), itj.getString("author"), postion, listDate)
+        notiupdate(mainActivity, itj.getString("title"), itj.getString("author"))
+        OkHttpUtils
+                .get()//
+                .url(itj.getString("cover"))//
+                .build()//
+                .execute(object : BitmapCallback() {
+                    override fun onError(call: Call?, e: Exception?, id: Int) {
+                    }
+
+                    override fun onResponse(response: Bitmap?, id: Int) {
+                        val builder = NotificationCompat.Builder(mainActivity)
+                        builder.setSmallIcon(R.drawable.miao)
+                        val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
+                        rv.setTextViewText(R.id.tv_music_title, itj.getString("title"))//修改自定义View中的歌名
+                        rv.setTextViewText(R.id.tv_music_author, itj.getString("author"))
+                        rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_pause)
+
+                        val intent = Intent(mainActivity, MessageActivity::class.java)
+                        val ma = PendingIntent.getActivity(mainActivity, 3, intent, 1)
+                        builder.setContentIntent(ma)//设置点击过后跳转的activity
+
+                        var buttonPlayIntent = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST) //----设置通知栏按钮广播
+                        var pendButtonPlayIntent = PendingIntent.getBroadcast(mainActivity, 0, buttonPlayIntent, 0);
+                        rv.setOnClickPendingIntent(R.id.bt_notilast, pendButtonPlayIntent)//----设置对应的按钮ID监控
+
+
+                        //修改自定义View中的图片(两种方法)
+                        rv.setImageViewBitmap(R.id.iv_noti_music_icon, response)
+                        mainActivity.rView = rv
+                        builder.setContent(rv)
+                        val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+                            var channelID = "2"
+                            var channelName = "channel_name";
+                            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+                            if (notificationManager != null) {
+                                notificationManager.createNotificationChannel(channel)
+                                builder.setChannelId(channelID);
+                                builder.build()
+                            }
+                            notificationManager.notify(2, builder.build())
+                        } else {            //弹出通知栏 8.0以下系统弹出方式
+                            if (notificationManager != null) {
+                                notificationManager.notify(2, builder.build());
+                            }
+                        }
+                    }
+                })
+
         val url = "https://www.bilibili.com/audio/music-service-c/web/url?sid=$sid&privilege=2&quality=2"
         OkHttpUtils
                 .get()
@@ -141,13 +201,18 @@ object NetService {
 
     fun gettopIBSid(buttonid: Int): Int {
         return when (buttonid) {
-            R.id.ib_homtop1 -> 10624
-            R.id.ib_homtop2 -> 10627
-            R.id.ib_homtop3 -> 10628
-            R.id.ib_homtop4 -> 10632
-            R.id.ib_homtop5 -> 30473
-            R.id.ib_homtop6 -> 10630
-            R.id.ib_homtop7 -> 10631
+            0 -> 10624
+            1 -> 10627
+            2 -> 10628
+            3 -> 10632
+            4 -> 30473
+            5 -> 10630
+            6 -> 10631
+            7 -> 10629
+            8 -> 30474
+            9 -> 10633
+            10 -> 30472
+            11 -> 10634
             else -> 10629
         }
 
@@ -157,6 +222,7 @@ object NetService {
 //        mainActivity.down_img_buttom.setImageURI(Uri.parse(picUrl))
 //        mainActivity.down_top_text.text = musicName
 
+        mainActivity.mediaEntity.musicUrl = picUrl
         Glide.with(mainActivity)
                 .load(picUrl)
                 .placeholder(R.mipmap.placeholder_disk_300)//图片加载出来前，显示的图片
@@ -169,7 +235,8 @@ object NetService {
         mainActivity.mediaEntity.lisdate = listDate
 
         mainActivity.rView?.let {
-            it.setTextViewText(R.id.tv_music_title, musicName) }//修改通知栏View中的歌名
+            it.setTextViewText(R.id.tv_music_title, musicName)
+        }//修改通知栏View中的歌名
 
     }
 
@@ -190,57 +257,302 @@ object NetService {
         return ""
     }
 
-
-    fun openLocationMusic(musicUrl: String, mainActivity: MainActivity, it: JSONObject) {
+    fun openLocationMusic(musicUrl: String, mainActivity: MainActivity, itj: JSONObject) {
         //如果在播放中，立刻暂停。
         if (mainActivity.mmv_music.isPlaying()) {
             mainActivity.mmv_music.pausePlayMusic()
         }
         mainActivity.mmv_music.changeControlBtnState(true)
-        setBottomMedia(mainActivity, it.getString("cover"), it.getString("title"), it.getString("author"), 0, null)
+        setBottomMedia(mainActivity, itj.getString("cover"), itj.getString("title"), itj.getString("author"), 0, null)
         mainActivity.mediaEntity.fileURL = null
         OpenMusic(mainActivity, musicUrl)
-        setNoti(mainActivity,it.getString("title"),it.getString("author"),musicUrl)
+//        setNoti(mainActivity, it.getString("title"), it.getString("author"), it.getString("cover"))
+//        var intentOne = Intent(mainActivity, notiService::class.java)
+//        intentOne.putExtra("picUrl", it.getString("cover"))
+//        intentOne.putExtra("musicName", it.getString("title"))
+//        intentOne.putExtra("author", it.getString("author"))
+//        mainActivity.startService(intentOne)
+
+        notiupdate(mainActivity, itj.getString("title"), itj.getString("author"))
+        OkHttpUtils
+                .get()//
+                .url(itj.getString("cover"))//
+                .build()//
+                .execute(object : BitmapCallback() {
+                    override fun onError(call: Call?, e: Exception?, id: Int) {
+                    }
+
+                    override fun onResponse(response: Bitmap?, id: Int) {
+                        val builder = NotificationCompat.Builder(mainActivity)
+                        builder.setSmallIcon(R.drawable.miao)
+                        val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
+                        rv.setTextViewText(R.id.tv_music_title, itj.getString("title"))//修改自定义View中的歌名
+                        rv.setTextViewText(R.id.tv_music_author, itj.getString("author"))
+                        rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_pause)
+
+                        val intent = Intent(mainActivity, MessageActivity::class.java)
+                        val ma = PendingIntent.getActivity(mainActivity, 3, intent, 1)
+                        builder.setContentIntent(ma)//设置点击过后跳转的activity
+
+                        var buttonPlayIntent = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST) //----设置通知栏按钮广播
+                        var pendButtonPlayIntent = PendingIntent.getBroadcast(mainActivity, 0, buttonPlayIntent, 0);
+                        rv.setOnClickPendingIntent(R.id.bt_notilast, pendButtonPlayIntent)//----设置对应的按钮ID监控
+
+
+                        //修改自定义View中的图片(两种方法)
+                        rv.setImageViewBitmap(R.id.iv_noti_music_icon, response)
+                        mainActivity.rView = rv
+                        builder.setContent(rv)
+
+                        val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+                            var channelID = "2"
+                            var channelName = "channel_name";
+                            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+                            if (notificationManager != null) {
+                                notificationManager.createNotificationChannel(channel)
+                                builder.setChannelId(channelID);
+                                builder.build()
+                            }
+                            notificationManager.notify(2, builder.build())
+                        } else {            //弹出通知栏 8.0以下系统弹出方式
+                            if (notificationManager != null) {
+                                notificationManager.notify(2, builder.build());
+                            }
+                        }
+                    }
+                })
 
     }
 
     fun openNoti(mainActivity: MainActivity) {
+
+
         val builder = NotificationCompat.Builder(mainActivity)
         builder.setSmallIcon(R.drawable.miao)
         val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
 //        rv.setTextViewText(R.id.tv_music_title, "泡沫")//修改自定义View中的歌名
 
+        ////////////////////////
         val intent = Intent(mainActivity, MessageActivity::class.java)
         val ma = PendingIntent.getActivity(mainActivity, 0, intent, 0)
         builder.setContentIntent(ma)//设置点击过后跳转的activity
+
+        var buttonPlayIntent = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST) //----设置通知栏按钮广播
+        var pendButtonPlayIntent = PendingIntent.getBroadcast(mainActivity, 0, buttonPlayIntent, 0);
+        rv.setOnClickPendingIntent(R.id.bt_notilast, pendButtonPlayIntent);//----设置对应的按钮ID监控
+
+        var buttonPlayIntent2 = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_NEXT) //----设置通知栏按钮广播
+        var pendButtonPlayIntent2 = PendingIntent.getBroadcast(mainActivity, 1, buttonPlayIntent2, 0);
+        rv.setOnClickPendingIntent(R.id.bt_notinext, pendButtonPlayIntent2)//----设置对应的按钮ID监控
+
+        var buttonPlayIntent3 = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_PLAY) //----设置通知栏按钮广播
+        var pendButtonPlayIntent3 = PendingIntent.getBroadcast(mainActivity, 1, buttonPlayIntent3, 0);
+        rv.setOnClickPendingIntent(R.id.bt_noticontrolmusic, pendButtonPlayIntent3)//----设置对应的按钮ID监控
+
+        var buttonPlayIntent4 = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_MUSICTYPE) //----设置通知栏按钮广播
+        var pendButtonPlayIntent4 = PendingIntent.getBroadcast(mainActivity, 1, buttonPlayIntent4, 0);
+        rv.setOnClickPendingIntent(R.id.iv_notimusictype, pendButtonPlayIntent4)//----设置对应的按钮ID监控
+
         //修改自定义View中的图片(两种方法)
 //        rv.setImageViewResource(R.id.iv,R.mipmap.ic_launcher);
         mainActivity.rView = rv
         builder.setContent(rv)
-        val notification = builder.build()
+        var notification = builder.build()
         val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(2, notification)
+//        notificationManager.notify(2, notification)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+            var channelID = "2"
+            var channelName = "channel_name";
+            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel)
+                builder.setChannelId(channelID);
+            }
+            notificationManager.notify(2, builder.build())
+        } else {            //弹出通知栏 8.0以下系统弹出方式
+            if (notificationManager != null) {
+                notificationManager.notify(2, builder.build());
+            }
+        }
     }
 
-    fun setNoti(mainActivity: MainActivity,musicName: String,author:String,picUrl: String) {
+
+//    fun setNoti(mainActivity: MainActivity, musicName: String, author: String, picUrl: String) {
+//
+//        Glide.with(mainActivity).load(picUrl).asBitmap().into(object : SimpleTarget<Bitmap>() {
+//            override fun onResourceReady(resource: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
+//                val builder = NotificationCompat.Builder(mainActivity)
+//                builder.setSmallIcon(R.drawable.miao)
+//                val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
+//                rv.setTextViewText(R.id.tv_music_title, musicName)//修改自定义View中的歌名
+//                rv.setTextViewText(R.id.tv_music_author, author)
+//                rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_pause)
+//
+//                val intent = Intent(mainActivity, MessageActivity::class.java)
+//                val ma = PendingIntent.getActivity(mainActivity, 3, intent, 1)
+//                builder.setContentIntent(ma)//设置点击过后跳转的activity
+//
+//                var buttonPlayIntent = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST) //----设置通知栏按钮广播
+//                var pendButtonPlayIntent = PendingIntent.getBroadcast(mainActivity, 0, buttonPlayIntent, 0);
+//                rv.setOnClickPendingIntent(R.id.bt_notilast, pendButtonPlayIntent)//----设置对应的按钮ID监控
+//
+//
+//                //修改自定义View中的图片(两种方法)
+//                rv.setImageViewBitmap(R.id.iv_noti_music_icon, resource)
+//                mainActivity.rView = rv
+//                builder.setContent(rv)
+//                val notification = builder.build()
+//                val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                notificationManager.notify(2, notification)
+//            }
+//        }) //方法中设置asBitmap可以设置回调类型
+//
+//    }
+
+    fun updateNoti(mainActivity: MainActivity, isplay: Boolean) {
+
+
         val builder = NotificationCompat.Builder(mainActivity)
         builder.setSmallIcon(R.drawable.miao)
         val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
-        rv.setTextViewText(R.id.tv_music_title, musicName)//修改自定义View中的歌名
-        rv.setTextViewText(R.id.tv_music_author, author)
 
         val intent = Intent(mainActivity, MessageActivity::class.java)
         val ma = PendingIntent.getActivity(mainActivity, 3, intent, 1)
         builder.setContentIntent(ma)//设置点击过后跳转的activity
-        //修改自定义View中的图片(两种方法)
-//        rv.setImageViewResource(R.id.iv,R.mipmap.ic_launcher);
+        if (!isplay) {
+            //修改自定义View中的图片(两种方法)
+            rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_play)
+        } else {
+            // (两种方法)
+            rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_pause)
+        }
 
         mainActivity.rView = rv
         builder.setContent(rv)
-        val notification = builder.build()
+
         val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(2, notification)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+            var channelID = "2"
+            var channelName = "channel_name";
+            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel)
+                builder.setChannelId(channelID);
+                builder.build()
+            }
+            notificationManager.notify(2, builder.build())
+        } else {            //弹出通知栏 8.0以下系统弹出方式
+            if (notificationManager != null) {
+                notificationManager.notify(2, builder.build());
+            }
+        }
     }
 
+    fun updateNotiType(mainActivity: MainActivity) {
 
+
+        val builder = NotificationCompat.Builder(mainActivity)
+        builder.setSmallIcon(R.drawable.miao)
+        val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
+        mainActivity.musicType
+        if ((mainActivity.musicType + 1) > 2) {
+            mainActivity.musicType = 0
+        } else {
+            mainActivity.musicType++
+        }
+
+        when {
+            mainActivity.musicType == 0 -> rv.setImageViewResource(R.id.iv_notimusictype, R.drawable.ic_onereturn)
+            mainActivity.musicType == 1 -> rv.setImageViewResource(R.id.iv_notimusictype, R.drawable.ic_cycle)
+            mainActivity.musicType == 2 -> rv.setImageViewResource(R.id.iv_notimusictype, R.drawable.ic_random)
+        }
+
+        mainActivity.rView = rv
+        builder.setContent(rv)
+
+        val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+            var channelID = "2"
+            var channelName = "channel_name";
+            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel)
+                builder.setChannelId(channelID);
+                builder.build()
+            }
+            notificationManager.notify(2, builder.build())
+        } else {            //弹出通知栏 8.0以下系统弹出方式
+            if (notificationManager != null) {
+                notificationManager.notify(2, builder.build());
+            }
+        }
+
+
+    }
+
+    fun getSearchMusic(keyWord: String, searchMusicDialog: SearchMusicDialog) {
+
+        val url = "http://api.bilibili.com/audio/music-service-c/s?appkey=1d8b6e7d45233436&build=5310300&keyword=$keyWord&mobi_app=android&page=1&pagesize=20&platform=android&search_type=music&ts=1537275674&sign=787ee9b465fc72752010bfe96a697106"
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(object : StringCallback() {
+                    override fun onResponse(response: String?, id: Int) {
+                        var datalist = JSONObject(response.toString()).getJSONObject("data").getJSONArray("result")
+                        searchMusicDialog.mainActivity.toast("搜索结果:" + datalist.length() + "个")
+                        searchMusicDialog.listAdapter.listdate = datalist
+                        searchMusicDialog.listAdapter.notifyDataSetChanged()
+                    }
+
+
+                    override fun onError(call: Call?, e: Exception?, id: Int) {
+                        searchMusicDialog.mainActivity.toast("网络请求超时")
+                    }
+                })
+
+    }
+
+    fun notiupdate(mainActivity: MainActivity, title: String, author: String) {
+        val builder = NotificationCompat.Builder(mainActivity)
+        builder.setSmallIcon(R.drawable.miao)
+        val rv = RemoteViews(mainActivity.getPackageName(), R.layout.layout_mini_musictis)
+        rv.setTextViewText(R.id.tv_music_title, title)//修改自定义View中的歌名
+        rv.setTextViewText(R.id.tv_music_author, author)
+        rv.setImageViewResource(R.id.bt_noticontrolmusic, R.drawable.mini_btn_pause)
+
+        val intent = Intent(mainActivity, MessageActivity::class.java)
+        val ma = PendingIntent.getActivity(mainActivity, 3, intent, 1)
+        builder.setContentIntent(ma)//设置点击过后跳转的activity
+
+        var buttonPlayIntent = Intent(ServiceReceiver.NOTIFICATION_ITEM_BUTTON_LAST) //----设置通知栏按钮广播
+        var pendButtonPlayIntent = PendingIntent.getBroadcast(mainActivity, 0, buttonPlayIntent, 0);
+        rv.setOnClickPendingIntent(R.id.bt_notilast, pendButtonPlayIntent)//----设置对应的按钮ID监控
+
+
+        //修改自定义View中的图片(两种方法)
+        mainActivity.rView = rv
+        builder.setContent(rv)
+        val notificationManager = mainActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0以上弹出通知状态栏
+            var channelID = "2"
+            var channelName = "channel_name";
+            var channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel)
+                builder.setChannelId(channelID);
+                builder.build()
+            }
+            notificationManager.notify(2, builder.build())
+        } else {            //弹出通知栏 8.0以下系统弹出方式
+            if (notificationManager != null) {
+                notificationManager.notify(2, builder.build());
+            }
+        }
+    }
 }
